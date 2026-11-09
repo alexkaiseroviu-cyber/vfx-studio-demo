@@ -6,14 +6,16 @@ const controls = {
   intensity: document.getElementById('intensity'),
   bloom: document.getElementById('bloom'),
   distortion: document.getElementById('distortion'),
-  grain: document.getElementById('grain')
+  grain: document.getElementById('grain'),
+  color: document.getElementById('color')
 };
 
 const valueLabels = {
   intensity: document.getElementById('intensityValue'),
   bloom: document.getElementById('bloomValue'),
   distortion: document.getElementById('distortionValue'),
-  grain: document.getElementById('grainValue')
+  grain: document.getElementById('grainValue'),
+  color: document.getElementById('colorValue')
 };
 
 const state = {
@@ -22,35 +24,30 @@ const state = {
   intensity: Number(controls.intensity.value),
   bloom: Number(controls.bloom.value),
   distortion: Number(controls.distortion.value),
-  grain: Number(controls.grain.value)
+  grain: Number(controls.grain.value),
+  color: Number(controls.color.value),
+  uploadedImage: null
 };
-
-function syncValues() {
-  Object.entries(controls).forEach(([key, input]) => {
-    valueLabels[key].textContent = input.value;
-    state[key] = Number(input.value);
-  });
-}
 
 Object.entries(controls).forEach(([key, input]) => {
   input.addEventListener('input', (event) => {
-    const val = event.target.value;
-    state[key] = Number(val);
-    valueLabels[key].textContent = val;
+    const value = Number(event.target.value);
+    state[key] = value;
+    valueLabels[key].textContent = value;
   });
 });
 
 function buildParticles() {
   const width = canvas.clientWidth || 1200;
   const height = canvas.clientHeight || 560;
-  const count = Math.min(170, Math.max(80, Math.floor(width / 8)));
+  const count = Math.min(180, Math.max(80, Math.floor(width / 8)));
 
   state.particles = Array.from({ length: count }, () => ({
     x: Math.random() * width,
     y: Math.random() * height,
     r: Math.random() * 2.2 + 1,
-    vx: (Math.random() - 0.5) * 1.4,
-    vy: (Math.random() - 0.5) * 1.4,
+    vx: (Math.random() - 0.5) * 1.5,
+    vy: (Math.random() - 0.5) * 1.5,
     hue: 170 + Math.random() * 130,
     alpha: Math.random() * 0.8 + 0.2
   }));
@@ -98,7 +95,7 @@ function renderBackground() {
   ctx.fill();
 
   ctx.beginPath();
-  ctx.fillStyle = 'rgba(126, 118, 255, 0.12)';
+  ctx.fillStyle = `rgba(${110 + state.color * 0.6}, 120, 255, 0.12)`;
   ctx.arc(w * 0.72, h * 0.52, 190 + state.intensity * 0.85, 0, Math.PI * 2);
   ctx.fill();
 }
@@ -147,7 +144,7 @@ function renderParticles() {
     if (p.y < 0 || p.y > h) p.vy *= -1;
 
     ctx.beginPath();
-    ctx.fillStyle = `hsla(${p.hue}, 100%, 72%, ${p.alpha})`;
+    ctx.fillStyle = `hsla(${p.hue + state.color * 0.35}, 100%, 72%, ${p.alpha})`;
     ctx.shadowBlur = 12 + state.bloom / 10;
     ctx.shadowColor = `hsla(${p.hue}, 100%, 70%, 0.9)`;
     ctx.arc(p.x, p.y, p.r + state.intensity / 180, 0, Math.PI * 2);
@@ -171,10 +168,31 @@ function renderGrain() {
   }
 }
 
+function renderUploadedMedia() {
+  if (!state.uploadedImage) return;
+
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight;
+  const img = state.uploadedImage;
+
+  const ratio = Math.min(w / img.width, h / img.height);
+  const drawW = img.width * ratio;
+  const drawH = img.height * ratio;
+  const x = (w - drawW) / 2;
+  const y = (h - drawH) / 2;
+
+  ctx.save();
+  ctx.globalAlpha = 0.22 + state.intensity / 220;
+  ctx.filter = 'saturate(1.4) contrast(1.2) brightness(1.15)';
+  ctx.drawImage(img, x, y, drawW, drawH);
+  ctx.restore();
+}
+
 function tick() {
   state.time += 0.016;
   updateTimeDisplay();
   renderBackground();
+  renderUploadedMedia();
   renderWave();
   renderParticles();
   renderGrain();
@@ -182,6 +200,27 @@ function tick() {
 }
 
 window.addEventListener('resize', resizeCanvas);
-syncValues();
+
+const mediaUpload = document.getElementById('mediaUpload');
+mediaUpload.addEventListener('change', (event) => {
+  const file = event.target.files?.[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (loadEvent) => {
+    const img = new Image();
+    img.onload = () => {
+      state.uploadedImage = img;
+    };
+    img.src = loadEvent.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+Object.entries(controls).forEach(([key, input]) => {
+  valueLabels[key].textContent = input.value;
+  state[key] = Number(input.value);
+});
+
 resizeCanvas();
 requestAnimationFrame(tick);

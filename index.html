@@ -28,18 +28,18 @@
           <button class="nav-item"><span>▤</span> Render</button>
         </nav>
 
-        <div class="project-mini-card">
-          <div class="mini-header">Current Project</div>
+        <div class="panel block-surface">
+          <div class="panel-title">Current project</div>
           <div class="project-name">Neon Rift / Shot 13</div>
-          <div class="project-meta">
+          <div class="project-tags">
             <span>NTSC</span>
             <span>4K</span>
             <span>ACES</span>
           </div>
         </div>
 
-        <div class="queue-card">
-          <div class="mini-header">Render Queue</div>
+        <div class="panel block-surface">
+          <div class="panel-title">Render queue</div>
           <div class="queue-item">
             <span class="dot green"></span>
             <div>
@@ -57,7 +57,7 @@
           <div class="queue-item">
             <span class="dot blue"></span>
             <div>
-              <strong>Drone Lense</strong>
+              <strong>Drone Lens</strong>
               <small>Queued</small>
             </div>
           </div>
@@ -96,52 +96,33 @@
           </div>
         </section>
 
-        <section class="preview-panel">
-          <div class="preview-header">
-            <div class="live-pill">Live Preview</div>
-            <div class="preview-meta">
-              <span>24 fps</span>
-              <span>4K</span>
-              <span>ACES</span>
-            </div>
-          </div>
-
-          <div class="canvas-frame">
-            <canvas id="fxCanvas" width="1280" height="680"></canvas>
-            <div class="canvas-tag tag-left">
-              <small>Node</small>
-              <strong>FX_Composite</strong>
-            </div>
-            <div class="canvas-tag tag-right">
-              <small>Exposure</small>
-              <strong>+1.4 EV</strong>
-            </div>
-          </div>
-        </section>
-
-        <section class="bottom-grid">
-          <div class="panel timeline-panel">
-            <div class="panel-head">
-              <span class="section-label">Timeline</span>
-              <div class="mini-actions">
-                <button class="ghost tiny">Play</button>
-                <button class="ghost tiny">Loop</button>
+        <section class="studio-grid">
+          <div class="preview-panel">
+            <div class="preview-header">
+              <div class="live-pill">Live Preview</div>
+              <div class="preview-meta">
+                <span>24 fps</span>
+                <span>4K</span>
+                <span>ACES</span>
               </div>
             </div>
 
-            <div class="timeline-box">
-              <div class="timeline-row">
-                <div class="bar bar-a"></div>
-                <div class="bar bar-b"></div>
-                <div class="bar bar-c active"></div>
+            <div class="canvas-frame">
+              <canvas id="fxCanvas" width="1280" height="680"></canvas>
+              <div class="canvas-tag tag-left">
+                <small>Node</small>
+                <strong>FX_Composite</strong>
               </div>
-              <div class="playhead"></div>
+              <div class="canvas-tag tag-right">
+                <small>Exposure</small>
+                <strong>+1.4 EV</strong>
+              </div>
             </div>
           </div>
 
-          <div class="panel inspector-panel">
+          <aside class="inspector-panel panel">
             <div class="panel-head">
-              <span class="section-label">Inspector</span>
+              <div class="section-label">Inspector</div>
               <span class="chip">Glow Pass</span>
             </div>
 
@@ -177,6 +158,54 @@
                   <span id="grainValue" class="value-pill">27</span>
                 </div>
               </div>
+
+              <div class="control">
+                <label for="color">Color Shift</label>
+                <div class="input-row">
+                  <input id="color" type="range" min="0" max="100" value="58" />
+                  <span id="colorValue" class="value-pill">58</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="upload-box">
+              <label for="mediaUpload" class="upload-label">Import Media</label>
+              <input id="mediaUpload" type="file" accept="image/*,video/*" />
+            </div>
+          </aside>
+        </section>
+
+        <section class="bottom-grid">
+          <div class="panel asset-panel">
+            <div class="panel-head">
+              <div class="section-label">Asset Browser</div>
+              <button class="ghost tiny">View All</button>
+            </div>
+
+            <div class="asset-grid">
+              <div class="asset-card neon"><span>Glow Pass</span></div>
+              <div class="asset-card haze"><span>Atmosphere</span></div>
+              <div class="asset-card shard"><span>Lens Burst</span></div>
+              <div class="asset-card flare"><span>Light Leak</span></div>
+            </div>
+          </div>
+
+          <div class="panel timeline-panel">
+            <div class="panel-head">
+              <div class="section-label">Timeline</div>
+              <div class="mini-actions">
+                <button class="ghost tiny">Play</button>
+                <button class="ghost tiny">Loop</button>
+              </div>
+            </div>
+
+            <div class="timeline-box">
+              <div class="timeline-row">
+                <div class="bar bar-a"></div>
+                <div class="bar bar-b"></div>
+                <div class="bar bar-c active"></div>
+              </div>
+              <div class="playhead"></div>
             </div>
           </div>
         </section>
