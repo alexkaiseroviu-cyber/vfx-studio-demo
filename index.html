@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VFX Studio Demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand-wrap">
+          <div class="brand-mark">V</div>
+          <div>
+            <div class="brand-title">VFX Studio</div>
+            <div class="brand-subtitle">Project Alpha</div>
+          </div>
+        </div>
+
+        <nav class="nav">
+          <button class="nav-item active">
+            <span>◉</span>
+            <span>Dashboard</span>
+          </button>
+          <button class="nav-item">
+            <span>◎</span>
+            <span>Shots</span>
+          </button>
+          <button class="nav-item">
+            <span>▣</span>
+            <span>Assets</span>
+          </button>
+          <button class="nav-item">
+            <span>△</span>
+            <span>Nodes</span>
+          </button>
+          <button class="nav-item">
+            <span>▤</span>
+            <span>Render</span>
+          </button>
+        </nav>
+
+        <div class="mini-panel">
+          <div class="mini-label">Queue</div>
+          <div class="queue-item">
+            <span class="queue-dot green"></span>
+            <div>
+              <strong>Shot_013</strong>
+              <small>Ready</small>
+            </div>
+          </div>
+          <div class="queue-item">
+            <span class="queue-dot amber"></span>
+            <div>
+              <strong>Shockwave</strong>
+              <small>Rendering</small>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar">
+          <div>
+            <div class="eyebrow">Compositing</div>
+            <h1>Neon Rift Sequence</h1>
+          </div>
+
+          <div class="actions">
+            <button class="ghost">Save</button>
+            <button class="primary">Render</button>
+          </div>
+        </header>
+
+        <section class="preview-panel">
+          <div class="panel-header">
+            <div class="status-pill">Live Preview</div>
+            <div class="frame-stats">
+              <span>24 fps</span>
+              <span>4K</span>
+              <span>ACES</span>
+            </div>
+          </div>
+
+          <div class="canvas-wrap">
+            <canvas id="fxCanvas" width="1280" height="700"></canvas>
+            <div class="hud overlay-left">
+              <small>NODE</small>
+              <strong>FX_Composite</strong>
+            </div>
+            <div class="hud overlay-right">
+              <small>TIME</small>
+              <strong id="timeLabel">00:14:52</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="lower-grid">
+          <div class="panel timeline-panel">
+            <div class="panel-header compact">
+              <div class="section-title">Timeline</div>
+              <div class="controls-inline">
+                <button class="tiny">Play</button>
+                <button class="tiny ghost">Loop</button>
+              </div>
+            </div>
+
+            <div class="timeline-track">
+              <div class="track-main">
+                <div class="clip clip-a"></div>
+                <div class="clip clip-b"></div>
+                <div class="clip clip-c active"></div>
+              </div>
+              <div class="playhead"></div>
+            </div>
+          </div>
+
+          <div class="panel inspector-panel">
+            <div class="panel-header compact">
+              <div class="section-title">Inspector</div>
+              <div class="chip">Glow Pass</div>
+            </div>
+
+            <div class="controls-list">
+              <div class="control-block">
+                <label for="intensity">Intensity</label>
+                <div class="slider-wrap">
+                  <input id="intensity" type="range" min="0" max="100" value="72" />
+                  <span class="value-badge" id="intensityValue">72</span>
+                </div>
+              </div>
+
+              <div class="control-block">
+                <label for="bloom">Bloom</label>
+                <div class="slider-wrap">
+                  <input id="bloom" type="range" min="0" max="100" value="61" />
+                  <span class="value-badge" id="bloomValue">61</span>
+                </div>
+              </div>
+
+              <div class="control-block">
+                <label for="distortion">Distortion</label>
+                <div class="slider-wrap">
+                  <input id="distortion" type="range" min="0" max="100" value="48" />
+                  <span class="value-badge" id="distortionValue">48</span>
+                </div>
+              </div>
+
+              <div class="control-block">
+                <label for="grain">Grain</label>
+                <div class="slider-wrap">
+                  <input id="grain" type="range" min="0" max="100" value="27" />
+                  <span class="value-badge" id="grainValue">27</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
