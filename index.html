@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#070d16" />
+    <meta name="description" content="Helios is a browser-based VFX preview studio demo." />
     <title>Helios VFX Studio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -20,198 +22,99 @@
           </div>
         </div>
 
-        <nav class="nav">
-          <button class="nav-item active"><span>◉</span> Dashboard</button>
-          <button class="nav-item"><span>◎</span> Compositor</button>
-          <button class="nav-item"><span>▣</span> Assets</button>
-          <button class="nav-item"><span>△</span> Nodes</button>
-          <button class="nav-item"><span>▤</span> Render</button>
+        <nav class="nav" aria-label="Main navigation">
+          <button class="nav-item active" type="button"><span aria-hidden="true">◉</span> Dashboard</button>
+          <button class="nav-item" type="button"><span aria-hidden="true">◎</span> Compositor</button>
+          <button class="nav-item" type="button"><span aria-hidden="true">▣</span> Assets</button>
+          <button class="nav-item" type="button"><span aria-hidden="true">△</span> Nodes</button>
+          <button class="nav-item" type="button"><span aria-hidden="true">▤</span> Render</button>
         </nav>
 
         <div class="panel block-surface">
           <div class="panel-title">Current project</div>
           <div class="project-name">Neon Rift / Shot 13</div>
-          <div class="project-tags">
-            <span>NTSC</span>
-            <span>4K</span>
-            <span>ACES</span>
-          </div>
+          <div class="project-tags"><span>24 FPS</span><span>4K</span><span>ACES</span></div>
         </div>
 
-        <div class="panel block-surface">
+        <div class="panel block-surface queue-card">
           <div class="panel-title">Render queue</div>
-          <div class="queue-item">
-            <span class="dot green"></span>
-            <div>
-              <strong>Shot_013</strong>
-              <small>Ready</small>
-            </div>
-          </div>
-          <div class="queue-item">
-            <span class="dot amber"></span>
-            <div>
-              <strong>Rift Burst</strong>
-              <small>Rendering</small>
-            </div>
-          </div>
-          <div class="queue-item">
-            <span class="dot blue"></span>
-            <div>
-              <strong>Drone Lens</strong>
-              <small>Queued</small>
-            </div>
-          </div>
+          <div class="queue-item"><span class="dot green"></span><div><strong>Shot_013</strong><small>Ready</small></div></div>
+          <div class="queue-item"><span class="dot amber"></span><div><strong>Rift Burst</strong><small>Rendering</small></div></div>
+          <div class="queue-item"><span class="dot blue"></span><div><strong>Drone Lens</strong><small>Queued</small></div></div>
         </div>
       </aside>
 
       <main class="main-panel">
         <header class="topbar">
-          <div>
-            <div class="eyebrow">Compositing</div>
-            <h1>Neon Rift Sequence</h1>
-          </div>
-
+          <div><div class="eyebrow">Compositing</div><h1>Neon Rift Sequence</h1></div>
           <div class="top-actions">
-            <button class="ghost small">Save</button>
-            <button class="primary">Render</button>
+            <button id="saveButton" class="ghost small" type="button" title="Save project (Ctrl/⌘+S)">Save</button>
+            <button id="renderButton" class="primary" type="button">Render PNG</button>
           </div>
         </header>
 
-        <section class="status-strip">
-          <div class="stat-box">
-            <small>Frame</small>
-            <strong>0143</strong>
-          </div>
-          <div class="stat-box">
-            <small>GPU</small>
-            <strong>92%</strong>
-          </div>
-          <div class="stat-box">
-            <small>Timecode</small>
-            <strong id="timeLabel">00:14:52</strong>
-          </div>
-          <div class="stat-box accent">
-            <small>Mode</small>
-            <strong>Live</strong>
-          </div>
+        <section class="status-strip" aria-label="Project status">
+          <div class="stat-box"><small>Frame</small><strong id="frameLabel">0143</strong></div>
+          <div class="stat-box"><small>Preview</small><strong>Realtime</strong></div>
+          <div class="stat-box"><small>Timecode</small><strong id="timeLabel">00:00:00</strong></div>
+          <div class="stat-box accent"><small>Mode</small><strong id="modeLabel">Paused</strong></div>
         </section>
 
         <section class="studio-grid">
           <div class="preview-panel">
             <div class="preview-header">
               <div class="live-pill">Live Preview</div>
-              <div class="preview-meta">
-                <span>24 fps</span>
-                <span>4K</span>
-                <span>ACES</span>
-              </div>
+              <div class="preview-meta"><span>24 fps</span><span>4K</span><span>ACES look</span></div>
             </div>
-
             <div class="canvas-frame">
-              <canvas id="fxCanvas" width="1280" height="680"></canvas>
-              <div class="canvas-tag tag-left">
-                <small>Node</small>
-                <strong>FX_Composite</strong>
-              </div>
-              <div class="canvas-tag tag-right">
-                <small>Exposure</small>
-                <strong>+1.4 EV</strong>
-              </div>
+              <canvas id="fxCanvas" width="1280" height="680" aria-label="Animated visual effects preview"></canvas>
+              <div class="canvas-tag tag-left"><small>Node</small><strong>FX_Composite</strong></div>
+              <div class="canvas-tag tag-right"><small>Source</small><strong id="sourceLabel">Procedural scene</strong></div>
             </div>
           </div>
 
           <aside class="inspector-panel panel">
-            <div class="panel-head">
-              <div class="section-label">Inspector</div>
-              <span class="chip">Glow Pass</span>
-            </div>
-
+            <div class="panel-head"><div class="section-label">Inspector</div><span class="chip">Glow Pass</span></div>
             <div class="control-list">
-              <div class="control">
-                <label for="intensity">Intensity</label>
-                <div class="input-row">
-                  <input id="intensity" type="range" min="0" max="100" value="72" />
-                  <span id="intensityValue" class="value-pill">72</span>
-                </div>
-              </div>
-
-              <div class="control">
-                <label for="bloom">Bloom</label>
-                <div class="input-row">
-                  <input id="bloom" type="range" min="0" max="100" value="61" />
-                  <span id="bloomValue" class="value-pill">61</span>
-                </div>
-              </div>
-
-              <div class="control">
-                <label for="distortion">Distortion</label>
-                <div class="input-row">
-                  <input id="distortion" type="range" min="0" max="100" value="49" />
-                  <span id="distortionValue" class="value-pill">49</span>
-                </div>
-              </div>
-
-              <div class="control">
-                <label for="grain">Grain</label>
-                <div class="input-row">
-                  <input id="grain" type="range" min="0" max="100" value="27" />
-                  <span id="grainValue" class="value-pill">27</span>
-                </div>
-              </div>
-
-              <div class="control">
-                <label for="color">Color Shift</label>
-                <div class="input-row">
-                  <input id="color" type="range" min="0" max="100" value="58" />
-                  <span id="colorValue" class="value-pill">58</span>
-                </div>
-              </div>
+              <div class="control"><label for="intensity">Intensity</label><div class="input-row"><input id="intensity" type="range" min="0" max="100" value="72" /><output id="intensityValue" class="value-pill">72</output></div></div>
+              <div class="control"><label for="bloom">Bloom</label><div class="input-row"><input id="bloom" type="range" min="0" max="100" value="61" /><output id="bloomValue" class="value-pill">61</output></div></div>
+              <div class="control"><label for="distortion">Distortion</label><div class="input-row"><input id="distortion" type="range" min="0" max="100" value="49" /><output id="distortionValue" class="value-pill">49</output></div></div>
+              <div class="control"><label for="grain">Grain</label><div class="input-row"><input id="grain" type="range" min="0" max="100" value="27" /><output id="grainValue" class="value-pill">27</output></div></div>
+              <div class="control"><label for="color">Color shift</label><div class="input-row"><input id="color" type="range" min="0" max="100" value="58" /><output id="colorValue" class="value-pill">58</output></div></div>
             </div>
-
             <div class="upload-box">
-              <label for="mediaUpload" class="upload-label">Import Media</label>
+              <label for="mediaUpload" class="upload-label">Import image or video</label>
               <input id="mediaUpload" type="file" accept="image/*,video/*" />
+              <button id="clearMediaButton" class="ghost tiny" type="button" hidden>Remove media</button>
+              <p class="upload-hint">Media stays in this browser session and is not uploaded.</p>
             </div>
           </aside>
         </section>
 
         <section class="bottom-grid">
           <div class="panel asset-panel">
-            <div class="panel-head">
-              <div class="section-label">Asset Browser</div>
-              <button class="ghost tiny">View All</button>
-            </div>
-
+            <div class="panel-head"><div class="section-label">Look presets</div><button id="resetButton" class="ghost tiny" type="button">Reset</button></div>
             <div class="asset-grid">
-              <div class="asset-card neon"><span>Glow Pass</span></div>
-              <div class="asset-card haze"><span>Atmosphere</span></div>
-              <div class="asset-card shard"><span>Lens Burst</span></div>
-              <div class="asset-card flare"><span>Light Leak</span></div>
+              <button class="asset-card neon" type="button" data-preset="rift"><span>Rift Glow</span></button>
+              <button class="asset-card haze" type="button" data-preset="haze"><span>Blue Haze</span></button>
+              <button class="asset-card shard" type="button" data-preset="energy"><span>Energy Burst</span></button>
+              <button class="asset-card flare" type="button" data-preset="film"><span>Film Flare</span></button>
             </div>
           </div>
 
           <div class="panel timeline-panel">
-            <div class="panel-head">
-              <div class="section-label">Timeline</div>
-              <div class="mini-actions">
-                <button class="ghost tiny">Play</button>
-                <button class="ghost tiny">Loop</button>
-              </div>
+            <div class="panel-head"><div class="section-label">Timeline</div><div class="mini-actions"><button id="playButton" class="ghost tiny" type="button" aria-pressed="false">Play</button><button id="loopButton" class="ghost tiny active-toggle" type="button" aria-pressed="true">Loop on</button></div></div>
+            <div class="timeline-box" id="timeline" aria-label="Click timeline to seek">
+              <div class="timeline-ruler"><span>00:00</span><span>00:05</span><span>00:10</span><span>00:15</span><span>00:20</span></div>
+              <div class="timeline-row"><div class="bar bar-a" title="Atmosphere layer"></div><div class="bar bar-b" title="Light streaks layer"></div><div class="bar bar-c active" title="Composite layer"></div></div>
+              <div class="playhead" id="playhead"></div>
             </div>
-
-            <div class="timeline-box">
-              <div class="timeline-row">
-                <div class="bar bar-a"></div>
-                <div class="bar bar-b"></div>
-                <div class="bar bar-c active"></div>
-              </div>
-              <div class="playhead"></div>
-            </div>
+            <div class="timeline-footer"><span>Shot_013_comp</span><span id="frameReadout">Frame 0000 / 0480</span></div>
           </div>
         </section>
       </main>
     </div>
-
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
     <script src="app.js"></script>
   </body>
 </html>
