@@ -1,31 +1,187 @@
-# VFX Studio Demo
+const canvas = document.getElementById('fxCanvas');
+const ctx = canvas.getContext('2d');
+const timeLabel = document.getElementById('timeLabel');
 
-A professional-looking VFX/visual-effects studio mockup built as a clean browser demo.
+const controls = {
+  intensity: document.getElementById('intensity'),
+  bloom: document.getElementById('bloom'),
+  distortion: document.getElementById('distortion'),
+  grain: document.getElementById('grain')
+};
 
-## Features
-- Cinematic dark UI inspired by advanced compositing tools
-- Animated FX canvas preview with particles, glow, and wave motion
-- Interactive controls for intensity, bloom, distortion, and grain
-- Timeline and inspector panels for a realistic VFX workflow feel
-- Fully static and dependency-free, so it runs immediately in a browser
+const valueLabels = {
+  intensity: document.getElementById('intensityValue'),
+  bloom: document.getElementById('bloomValue'),
+  distortion: document.getElementById('distortionValue'),
+  grain: document.getElementById('grainValue')
+};
 
-## Run locally
-Open `index.html` directly in a browser, or serve the folder with a simple local web server:
+const state = {
+  particles: [],
+  time: 0,
+  intensity: Number(controls.intensity.value),
+  bloom: Number(controls.bloom.value),
+  distortion: Number(controls.distortion.value),
+  grain: Number(controls.grain.value)
+};
 
-```bash
-python3 -m http.server 8000
-```
+function syncValues() {
+  Object.entries(controls).forEach(([key, input]) => {
+    valueLabels[key].textContent = input.value;
+    state[key] = Number(input.value);
+  });
+}
 
-Then visit:
+Object.entries(controls).forEach(([key, input]) => {
+  input.addEventListener('input', (event) => {
+    const val = event.target.value;
+    state[key] = Number(val);
+    valueLabels[key].textContent = val;
+  });
+});
 
-```text
-http://localhost:8000
-```
+function buildParticles() {
+  const width = canvas.clientWidth || 1200;
+  const height = canvas.clientHeight || 560;
+  const count = Math.min(170, Math.max(80, Math.floor(width / 8)));
 
-## Project structure
-- `index.html` — app layout
-- `styles.css` — cinematic dashboard styling
-- `app.js` — animation and interactivity
+  state.particles = Array.from({ length: count }, () => ({
+    x: Math.random() * width,
+    y: Math.random() * height,
+    r: Math.random() * 2.2 + 1,
+    vx: (Math.random() - 0.5) * 1.4,
+    vy: (Math.random() - 0.5) * 1.4,
+    hue: 170 + Math.random() * 130,
+    alpha: Math.random() * 0.8 + 0.2
+  }));
+}
 
-## Notes
-This is a polished front-end prototype/demo designed to showcase a professional VFX product interface without requiring heavy dependencies or setup.
+function resizeCanvas() {
+  const ratio = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * ratio;
+  canvas.height = rect.height * ratio;
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  buildParticles();
+}
+
+function updateTimeDisplay() {
+  const total = Math.floor(state.time % 3600);
+  const minutes = String(Math.floor(total / 60)).padStart(2, '0');
+  const seconds = String(total % 60).padStart(2, '0');
+  timeLabel.textContent = `00:${minutes}:${seconds}`;
+}
+
+function renderBackground() {
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight;
+
+  const g = ctx.createRadialGradient(
+    w * 0.5,
+    h * 0.45,
+    40,
+    w * 0.5,
+    h * 0.45,
+    w * 0.78
+  );
+
+  g.addColorStop(0, `rgba(27, 76, 101, ${0.22 + state.intensity / 200})`);
+  g.addColorStop(0.3, `rgba(34, 32, 92, ${0.42 + state.bloom / 180})`);
+  g.addColorStop(1, 'rgba(4, 8, 14, 1)');
+
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, w, h);
+
+  ctx.beginPath();
+  ctx.fillStyle = 'rgba(115, 231, 255, 0.12)';
+  ctx.arc(w * 0.28, h * 0.6, 160 + state.bloom * 0.8, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.fillStyle = 'rgba(126, 118, 255, 0.12)';
+  ctx.arc(w * 0.72, h * 0.52, 190 + state.intensity * 0.85, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function renderWave() {
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight;
+  const amplitude = 28 + state.distortion * 0.7;
+  const frequency = 0.012 + state.bloom / 9000;
+
+  ctx.beginPath();
+  for (let x = 0; x <= w; x += 8) {
+    const y = h * 0.56 + Math.sin(x * frequency + state.time * 1.8) * amplitude + Math.cos(x * (frequency * 1.8) - state.time) * (amplitude * 0.55);
+    if (x === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+
+  ctx.strokeStyle = `rgba(115, 231, 255, ${0.35 + state.bloom / 170})`;
+  ctx.lineWidth = 2.2;
+  ctx.shadowBlur = 18 + state.intensity / 6;
+  ctx.shadowColor = 'rgba(115, 231, 255, 0.8)';
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  ctx.beginPath();
+  ctx.fillStyle = 'rgba(126, 118, 255, 0.08)';
+  ctx.moveTo(0, h);
+  for (let x = 0; x <= w; x += 22) {
+    const y = h * 0.78 + Math.sin(x * 0.024 + state.time * 1.4) * (26 + state.distortion * 0.3);
+    ctx.lineTo(x, y);
+  }
+  ctx.lineTo(w, h);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function renderParticles() {
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight;
+
+  for (const p of state.particles) {
+    p.x += p.vx * (1 + state.intensity / 90);
+    p.y += p.vy * (1 + state.distortion / 90);
+
+    if (p.x < 0 || p.x > w) p.vx *= -1;
+    if (p.y < 0 || p.y > h) p.vy *= -1;
+
+    ctx.beginPath();
+    ctx.fillStyle = `hsla(${p.hue}, 100%, 72%, ${p.alpha})`;
+    ctx.shadowBlur = 12 + state.bloom / 10;
+    ctx.shadowColor = `hsla(${p.hue}, 100%, 70%, 0.9)`;
+    ctx.arc(p.x, p.y, p.r + state.intensity / 180, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  ctx.shadowBlur = 0;
+}
+
+function renderGrain() {
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight;
+  const grainAmount = state.grain / 120;
+
+  for (let i = 0; i < 220; i += 1) {
+    const x = Math.random() * w;
+    const y = Math.random() * h;
+    const alpha = grainAmount * (0.18 + Math.random() * 0.9);
+    ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+    ctx.fillRect(x, y, 1.4, 1.4);
+  }
+}
+
+function tick() {
+  state.time += 0.016;
+  updateTimeDisplay();
+  renderBackground();
+  renderWave();
+  renderParticles();
+  renderGrain();
+  requestAnimationFrame(tick);
+}
+
+window.addEventListener('resize', resizeCanvas);
+syncValues();
+resizeCanvas();
+requestAnimationFrame(tick);

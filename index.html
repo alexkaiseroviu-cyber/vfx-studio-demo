@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>VFX Studio Demo</title>
+    <title>Helios VFX Studio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -12,148 +12,169 @@
   <body>
     <div class="app-shell">
       <aside class="sidebar">
-        <div class="brand-wrap">
-          <div class="brand-mark">V</div>
+        <div class="brand-block">
+          <div class="brand-mark">H</div>
           <div>
-            <div class="brand-title">VFX Studio</div>
-            <div class="brand-subtitle">Project Alpha</div>
+            <div class="brand-title">Helios</div>
+            <div class="brand-subtitle">VFX Studio</div>
           </div>
         </div>
 
         <nav class="nav">
-          <button class="nav-item active">
-            <span>◉</span>
-            <span>Dashboard</span>
-          </button>
-          <button class="nav-item">
-            <span>◎</span>
-            <span>Shots</span>
-          </button>
-          <button class="nav-item">
-            <span>▣</span>
-            <span>Assets</span>
-          </button>
-          <button class="nav-item">
-            <span>△</span>
-            <span>Nodes</span>
-          </button>
-          <button class="nav-item">
-            <span>▤</span>
-            <span>Render</span>
-          </button>
+          <button class="nav-item active"><span>◉</span> Dashboard</button>
+          <button class="nav-item"><span>◎</span> Compositor</button>
+          <button class="nav-item"><span>▣</span> Assets</button>
+          <button class="nav-item"><span>△</span> Nodes</button>
+          <button class="nav-item"><span>▤</span> Render</button>
         </nav>
 
-        <div class="mini-panel">
-          <div class="mini-label">Queue</div>
+        <div class="project-mini-card">
+          <div class="mini-header">Current Project</div>
+          <div class="project-name">Neon Rift / Shot 13</div>
+          <div class="project-meta">
+            <span>NTSC</span>
+            <span>4K</span>
+            <span>ACES</span>
+          </div>
+        </div>
+
+        <div class="queue-card">
+          <div class="mini-header">Render Queue</div>
           <div class="queue-item">
-            <span class="queue-dot green"></span>
+            <span class="dot green"></span>
             <div>
               <strong>Shot_013</strong>
               <small>Ready</small>
             </div>
           </div>
           <div class="queue-item">
-            <span class="queue-dot amber"></span>
+            <span class="dot amber"></span>
             <div>
-              <strong>Shockwave</strong>
+              <strong>Rift Burst</strong>
               <small>Rendering</small>
+            </div>
+          </div>
+          <div class="queue-item">
+            <span class="dot blue"></span>
+            <div>
+              <strong>Drone Lense</strong>
+              <small>Queued</small>
             </div>
           </div>
         </div>
       </aside>
 
-      <main class="workspace">
+      <main class="main-panel">
         <header class="topbar">
           <div>
             <div class="eyebrow">Compositing</div>
             <h1>Neon Rift Sequence</h1>
           </div>
 
-          <div class="actions">
-            <button class="ghost">Save</button>
+          <div class="top-actions">
+            <button class="ghost small">Save</button>
             <button class="primary">Render</button>
           </div>
         </header>
 
+        <section class="status-strip">
+          <div class="stat-box">
+            <small>Frame</small>
+            <strong>0143</strong>
+          </div>
+          <div class="stat-box">
+            <small>GPU</small>
+            <strong>92%</strong>
+          </div>
+          <div class="stat-box">
+            <small>Timecode</small>
+            <strong id="timeLabel">00:14:52</strong>
+          </div>
+          <div class="stat-box accent">
+            <small>Mode</small>
+            <strong>Live</strong>
+          </div>
+        </section>
+
         <section class="preview-panel">
-          <div class="panel-header">
-            <div class="status-pill">Live Preview</div>
-            <div class="frame-stats">
+          <div class="preview-header">
+            <div class="live-pill">Live Preview</div>
+            <div class="preview-meta">
               <span>24 fps</span>
               <span>4K</span>
               <span>ACES</span>
             </div>
           </div>
 
-          <div class="canvas-wrap">
-            <canvas id="fxCanvas" width="1280" height="700"></canvas>
-            <div class="hud overlay-left">
-              <small>NODE</small>
+          <div class="canvas-frame">
+            <canvas id="fxCanvas" width="1280" height="680"></canvas>
+            <div class="canvas-tag tag-left">
+              <small>Node</small>
               <strong>FX_Composite</strong>
             </div>
-            <div class="hud overlay-right">
-              <small>TIME</small>
-              <strong id="timeLabel">00:14:52</strong>
+            <div class="canvas-tag tag-right">
+              <small>Exposure</small>
+              <strong>+1.4 EV</strong>
             </div>
           </div>
         </section>
 
-        <section class="lower-grid">
+        <section class="bottom-grid">
           <div class="panel timeline-panel">
-            <div class="panel-header compact">
-              <div class="section-title">Timeline</div>
-              <div class="controls-inline">
-                <button class="tiny">Play</button>
-                <button class="tiny ghost">Loop</button>
+            <div class="panel-head">
+              <span class="section-label">Timeline</span>
+              <div class="mini-actions">
+                <button class="ghost tiny">Play</button>
+                <button class="ghost tiny">Loop</button>
               </div>
             </div>
 
-            <div class="timeline-track">
-              <div class="track-main">
-                <div class="clip clip-a"></div>
-                <div class="clip clip-b"></div>
-                <div class="clip clip-c active"></div>
+            <div class="timeline-box">
+              <div class="timeline-row">
+                <div class="bar bar-a"></div>
+                <div class="bar bar-b"></div>
+                <div class="bar bar-c active"></div>
               </div>
               <div class="playhead"></div>
             </div>
           </div>
 
           <div class="panel inspector-panel">
-            <div class="panel-header compact">
-              <div class="section-title">Inspector</div>
-              <div class="chip">Glow Pass</div>
+            <div class="panel-head">
+              <span class="section-label">Inspector</span>
+              <span class="chip">Glow Pass</span>
             </div>
 
-            <div class="controls-list">
-              <div class="control-block">
+            <div class="control-list">
+              <div class="control">
                 <label for="intensity">Intensity</label>
-                <div class="slider-wrap">
+                <div class="input-row">
                   <input id="intensity" type="range" min="0" max="100" value="72" />
-                  <span class="value-badge" id="intensityValue">72</span>
+                  <span id="intensityValue" class="value-pill">72</span>
                 </div>
               </div>
 
-              <div class="control-block">
+              <div class="control">
                 <label for="bloom">Bloom</label>
-                <div class="slider-wrap">
+                <div class="input-row">
                   <input id="bloom" type="range" min="0" max="100" value="61" />
-                  <span class="value-badge" id="bloomValue">61</span>
+                  <span id="bloomValue" class="value-pill">61</span>
                 </div>
               </div>
 
-              <div class="control-block">
+              <div class="control">
                 <label for="distortion">Distortion</label>
-                <div class="slider-wrap">
-                  <input id="distortion" type="range" min="0" max="100" value="48" />
-                  <span class="value-badge" id="distortionValue">48</span>
+                <div class="input-row">
+                  <input id="distortion" type="range" min="0" max="100" value="49" />
+                  <span id="distortionValue" class="value-pill">49</span>
                 </div>
               </div>
 
-              <div class="control-block">
+              <div class="control">
                 <label for="grain">Grain</label>
-                <div class="slider-wrap">
+                <div class="input-row">
                   <input id="grain" type="range" min="0" max="100" value="27" />
-                  <span class="value-badge" id="grainValue">27</span>
+                  <span id="grainValue" class="value-pill">27</span>
                 </div>
               </div>
             </div>
